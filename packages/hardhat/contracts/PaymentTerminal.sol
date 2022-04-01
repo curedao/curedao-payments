@@ -18,9 +18,10 @@ contract PaymentTerminal is Pausable, AccessControl {
   IERC20 private token;
   address public treasury;
 
-  constructor(IERC20 _token, address multisig) {
+  constructor(IERC20 _token, address multisig, address paymentRole) {
     token = _token;
     treasury = multisig;
+    _grantRole(PAYMENTS_ROLE, paymentRole);
     _grantRole(DEFAULT_ADMIN_ROLE, multisig);
     _grantRole(PAUSER_ROLE, multisig);
   }

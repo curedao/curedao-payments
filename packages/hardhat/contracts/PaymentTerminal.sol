@@ -7,16 +7,19 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract PaymentTerminal {
-
+contract PaymentTerminal is Pausable, AccessControl {
+  bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
   IERC20 private demoToken;
   address public treasury;
 
-  constructor(IERC20 _token, address _treasury) payable {
+  constructor(IERC20 _token, address multisig) {
     demoToken = _token;
-    treasury = _treasury;
+    treasury = multisig;
+    _grantRole(DEFAULT_ADMIN_ROLE, multisig);
+    _grantRole(PAUSER_ROLE, multisig);
   }
 
   /// @notice Makes demoToken payments from the CureDAO MultiSig
@@ -35,6 +38,14 @@ contract PaymentTerminal {
   function terminalAllowance() external view returns(uint256) {
     return demoToken.allowance(treasury, address(this));
   }
+
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
+    }
 
   // to support receiving ETH by default
   receive() external payable {}

@@ -12,6 +12,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract PaymentTerminal is Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+  bytes32 public constant PAYMENTS_ROLE = keccak256("PAYMENTS_ROLE");
+
   IERC20 private demoToken;
   address public treasury;
 
@@ -27,7 +29,7 @@ contract PaymentTerminal is Pausable, AccessControl {
   /// @param to:address Address where tokens must be transferred to
   /// @param amount:uint256 Amount of tokens to be transferred
   /// @return bool Indicates if the function executed successfully
-  function payment(address payable to, uint256 amount) public returns(bool) {
+  function payment(address payable to, uint256 amount) public onlyRole(PAYMENTS_ROLE) returns(bool) {
     require(demoToken.transferFrom(treasury, to, amount), "Payment was unsuccessful");
     return true;
   }

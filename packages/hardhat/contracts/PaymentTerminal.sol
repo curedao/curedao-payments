@@ -4,6 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 /// @author @lourenslinde
 /// @notice Acts as the payment intermediary between the CureDAO multisig 
 /// @dev Allows for the automated payment of tokens from the CureDAO multisig, using approve() + transferFrom() pattern
+/// @dev For testing: uses DemoToken.sol as replacement for GCURE token and uses Treasury.sol as replacement for MultiSig 
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -14,11 +15,11 @@ contract PaymentTerminal is Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
   bytes32 public constant PAYMENTS_ROLE = keccak256("PAYMENTS_ROLE");
 
-  IERC20 private demoToken;
+  IERC20 private token;
   address public treasury;
 
   constructor(IERC20 _token, address multisig) {
-    demoToken = _token;
+    token = _token;
     treasury = multisig;
     _grantRole(DEFAULT_ADMIN_ROLE, multisig);
     _grantRole(PAUSER_ROLE, multisig);
@@ -30,7 +31,7 @@ contract PaymentTerminal is Pausable, AccessControl {
   /// @param amount:uint256 Amount of tokens to be transferred
   /// @return bool Indicates if the function executed successfully
   function payment(address payable to, uint256 amount) public onlyRole(PAYMENTS_ROLE) returns(bool) {
-    require(demoToken.transferFrom(treasury, to, amount), "Payment was unsuccessful");
+    require(token.transferFrom(treasury, to, amount), "Payment was unsuccessful");
     return true;
   }
 
@@ -38,7 +39,7 @@ contract PaymentTerminal is Pausable, AccessControl {
   /// @dev Calls the allowance(address) on the IERC20 interface. 
   /// @return amount:uint256 Spender's allowance
   function terminalAllowance() external view returns(uint256) {
-    return demoToken.allowance(treasury, address(this));
+    return token.allowance(treasury, address(this));
   }
 
     function pause() public onlyRole(PAUSER_ROLE) {

@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+  await deploy("Treasury", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -26,7 +26,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   });
 
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  const Treasury = await ethers.getContract("Treasury", deployer);
+
+  await deploy("DemoToken", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    args: [ Treasury.address ],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  // Getting a previously deployed contract
+  const DemoToken = await ethers.getContract("DemoToken", deployer);
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
@@ -36,6 +47,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */
 
+    await deploy("PaymentTerminal", {
+      // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+      from: deployer,
+      args: [ DemoToken.address, Treasury.address ],
+      log: true,
+      waitConfirmations: 5,
+    });
+    console.log("Payment terminal deployed")
+    const PaymentTerminal = await ethers.getContract("PaymentTerminal", deployer);
+
+    await Treasury.setToken(DemoToken.address);
+    await Treasury.approveTerminal(PaymentTerminal.address, 10*10**18);
   /*
   //If you want to send value to an address from the deployer
   const deployerWallet = ethers.provider.getSigner()

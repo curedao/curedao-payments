@@ -50,15 +50,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     await deploy("PaymentTerminal", {
       // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
       from: deployer,
-      args: [ DemoToken.address, Treasury.address, 0x2A5A77C9CA2800316A2bD99654dDD0f16E68b732 ], //Replace args[3] with Payer address
+      args: [ DemoToken.address, Treasury.address, "0x9BB09321140d2Ed471867bE56b5D5936BAB93E85" ], //Replace args[3] with Payer address
       log: true,
       waitConfirmations: 5,
     });
     console.log("Payment terminal deployed")
     const PaymentTerminal = await ethers.getContract("PaymentTerminal", deployer);
-
+    console.log("Received terminal");
     await Treasury.setToken(DemoToken.address);
-    await Treasury.approveTerminal(PaymentTerminal.address, 10*10**18);
+    console.log("setToken done...");
+    //await Treasury.approveTerminal(PaymentTerminal.address, 10*10**18);
+    //console.log("Approve done...");
   /*
   //If you want to send value to an address from the deployer
   const deployerWallet = ethers.provider.getSigner()

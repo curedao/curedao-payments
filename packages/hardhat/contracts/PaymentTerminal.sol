@@ -26,7 +26,7 @@ contract PaymentTerminal is Pausable, AccessControl {
     _grantRole(PAUSER_ROLE, multisig);
   }
 
-  /// @notice Makes demoToken payments from the CureDAO MultiSig
+  /// @notice Makes token payments from the CureDAO MultiSig
   /// @dev Calls transferFrom on demoToken
   /// @param to:address Address where tokens must be transferred to
   /// @param amount:uint256 Amount of tokens to be transferred

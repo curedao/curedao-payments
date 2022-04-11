@@ -1,7 +1,7 @@
 //  @title CureDAO Payments Automation
 //  @author @lourenslinde, built upon Openzeppelin Defender Rollup examples
 //  @dev Allows for a webhook to POST to this Autotask which, in turn, connects to the.. 
-//  ...Openzeppeling Relayer for the Payment Terminal
+//  ...Openzeppelin Relayer for the Payment Terminal
 //  @notice Copy and paste this into the Autotask code section on Defender.
 
 'use strict';

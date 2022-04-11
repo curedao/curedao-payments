@@ -50,7 +50,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     await deploy("PaymentTerminal", {
       // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
       from: deployer,
-      args: [ DemoToken.address, Treasury.address, "0x9BB09321140d2Ed471867bE56b5D5936BAB93E85" ], //Replace args[3] with Payer address
+      args: [ DemoToken.address, Treasury.address, "0x2A5A77C9CA2800316A2bD99654dDD0f16E68b732" ], //Replace args[3] with Payer address
       log: true,
       waitConfirmations: 5,
     });

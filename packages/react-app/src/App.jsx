@@ -33,6 +33,15 @@ import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
+
+// Logic to pull info from Google Sheets
+const GSheetReader = require('g-sheets-api');
+
+GSheetReader(options, results => {
+  // do something with the results here
+}).catch(err => {
+  // do something with the error message here
+});
 /*
     Welcome to 🏗 scaffold-eth !
 
